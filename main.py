@@ -24,13 +24,13 @@ import math
 import random
 import csv
 from queue import PriorityQueue
-from collections import OrderedDict
 import copy
-import re
 import time
-import numpy as np
-import hashlib
+import openai
+import private_info
 
+
+client = openai.OpenAI(api_key=private_info.api_key)
 
 class Node:
     """
@@ -374,8 +374,8 @@ class Roadtrip:
         print(self.get_total_distance(), end=" ")
         print(self.time_estimate(speed_in_mph), end=" ")
         print()
-        print(self.total_theme_count())
-        print(themes)
+        # print(self.total_theme_count())
+        # print(themes)
 
     def write_result_to_file(self, num, start_node, maxTime, speed_in_mph, themes, output_file=None):
         """
@@ -446,6 +446,52 @@ class Roadtrip:
             file.write(str(themes))
             file.write("\n")
             file.write("\n")
+
+
+    def Give_Narrative(self, start_node):
+
+        if not isinstance(start_node, Node):
+            start_node = self.get_node_by_location(start_node)
+
+        cur_node = start_node
+        line_number = 1
+
+        user_content = ""
+
+        for edge in self.EdgeList:
+            user_content += str(line_number) + ". "
+            user_content += cur_node.name
+
+            if self.find_NodeA(edge) == cur_node:
+                cur_node = self.find_NodeB(edge)
+            else:
+                cur_node = self.find_NodeA(edge)
+
+            user_content += cur_node.name
+
+            user_content += "\n"
+            line_number += 1
+
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a road trip assistant and give attractions based on a road trip."
+                },
+                {
+                    "role": "user",
+                    "content": user_content
+                }
+            ],
+            temperature=1,
+            max_tokens=3000,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        print("\nLLM Generated Response: ")
+        print(response.choices[0].message.content)
             
 
 class RegressionTree:
@@ -1202,6 +1248,8 @@ def main():
 
     first_trip[1].print_result(num_trials, start_location, max_time, speed_in_mph, themes)
     first_trip[1].write_result_to_file(num_trials, start_location, max_time, speed_in_mph, themes, result_file)
+    #FIXME ADD GIVE NARRATIVE HERE
+    first_trip[1].Give_Narrative(start_location)
     num_trials += 1
 
     runtimes.append(first_trip[1].time_search)
@@ -1215,6 +1263,8 @@ def main():
             cur_trip = round_trips.get()
             cur_trip[1].print_result(num_trials, start_location, max_time, speed_in_mph, themes)
             cur_trip[1].write_result_to_file(num_trials, start_location, max_time, speed_in_mph, themes, result_file)
+            cur_trip[1].Give_Narrative(start_location)
+            # FIXME ADD GIVE NARRATIVE HERE
             num_trials += 1
             runtimes.append(cur_trip[1].time_search)
             preferences.append(cur_trip[1].total_preference())
