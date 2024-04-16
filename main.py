@@ -455,12 +455,23 @@ class Roadtrip:
 
         cur_node = start_node
         line_number = 1
+        
+        """
+            Format
+            i = line_number
+            name1 = first node
+            name2 = second node
+            
+            i. name1 (name1.preference, name1.themes) -> (edge.actualDistance, edge.preference, edge.themes) name2 (name2.preference, name2.themes)
+        """
 
         user_content = ""
 
         for edge in self.EdgeList:
             user_content += str(line_number) + ". "
             user_content += cur_node.name
+            user_content += f" ({str(cur_node.preference)}, {str(cur_node.themes)})"
+            user_content += f" -> ({str(edge.actualDistance)}, {str(edge.preference)}, {str(edge.themes)}) "
 
             if self.find_NodeA(edge) == cur_node:
                 cur_node = self.find_NodeB(edge)
@@ -468,10 +479,14 @@ class Roadtrip:
                 cur_node = self.find_NodeA(edge)
 
             user_content += cur_node.name
+            user_content += f" ({str(cur_node.preference)}, {str(cur_node.themes)})"
 
             user_content += "\n"
             line_number += 1
 
+        # remember to build based on articles and references
+        # use one of the patterns from the article
+        # use assistant role as well    
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
