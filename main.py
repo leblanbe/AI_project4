@@ -516,17 +516,17 @@ class Roadtrip:
         # Please preserve the formatting and overall template that I provide
         # This is the template: PATTERN with PLACEHOLDERS 
        
-        system_content = "You are a road trip assistant. You give attractions at various locations as well " \
-                         "as preferred edges based on a road trip. Provide the output that a road trip assistant would create. " \
-                         "When I say 'give me a road trip assistant report,' I mean give me a report based on my inputted road trip " \
-                         "with the role of a road trip assistant."
+        system_content = ("You are a road trip assistant. You give attractions at various locations as well "
+                         "as preferred edges based on a road trip. Provide the output that a road trip assistant would create. "
+                         "When I say 'give me a road trip assistant report,' I mean give me a report based on my inputted road trip "
+                         "with the role of a road trip assistant.")
         
-        assistant_message = "Road trips will be in the following pattern." \
-                            "i. name1 (name1.preference, name1.themes) -> (edge.actualDistance, edge.preference, edge.themes) name2 (name2.preference, name2.themes)\n" \
-                            "where i is a number, name1 is a location, name2 is another location, and -> refers to an edge between the two locations." \
+        assistant_message = ("Road trips will be in the following pattern."
+                            "i. name1 (name1.preference, name1.themes) -> (edge.actualDistance, edge.preference, edge.themes) name2 (name2.preference, name2.themes)\n"
+                            "where i is a number, name1 is a location, name2 is another location, and -> refers to an edge between the two locations.")
                  
-        prompt = "Give me a road trip assistant report. If there are alternative ways to accomplish this, give two alternative approaches " \
-                 "and compare and contrast these approaches."
+        prompt = ("Give me a road trip assistant report. If there are alternative ways to accomplish this, give two alternative approaches "
+                 "and compare and contrast these approaches.")
 
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -593,13 +593,13 @@ class RegressionTree:
 
         The tree structure is as follows:
                                 [0]
-                      /                      \
+                      /                      \\
                     [1]                     [2]
-                /        \             /           \
+                /        \             /           \\
             [3]         [4]          [5]           [6]
-            /  \        / \          / \         /     \
+            /  \        / \          / \         /     \\
           [7]  [0.21] [0.3][0.62] [0.5] [0.61] [0.73] [0.92]
-         /  \
+         /  \\
       [0.1] [0.5]
 
         Returns:
@@ -646,11 +646,11 @@ class RegressionTree:
 
         The tree structure is as follows:
                                 [0]
-                      /                      \
+                      /                      \\
                      [1]                     [1]
-                /           \             /           \
+                /           \             /           \\
             [2]            [2]          [2]           [2]
-            /  \           / \          / \         /     \
+            /  \           / \          / \         /     \\
           [0.5]  [0.21] [0.3][0.62] [0.5] [0.61] [0.73] [0.92]
 
         Returns:
