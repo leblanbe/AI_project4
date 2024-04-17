@@ -2,6 +2,8 @@
 Group Number 2
 Marcus Kamen, Marius Schueller, Brynn LeBlanc, and Daniel Yakubu
 
+Use your own API key for ChatGPT, as described under the imports
+
 To run this file you press play on main if using Pycharm. Otherwise, just run the main function with any
 standard python interpreter. Make sure to have math, random, csv, queue, PriorityQueue, copy, re, and time
 installed as packages on your computer for python. During runtime, you will be asked for the start city which should be
@@ -27,9 +29,11 @@ from queue import PriorityQueue
 import copy
 import time
 import openai
+
+# this imports a private API key
 import private_info
 
-
+# either replace "private_info.api_key" with your API key, or update the private_info file to include your API key
 client = openai.OpenAI(api_key=private_info.api_key)
 
 class Node:
@@ -374,8 +378,8 @@ class Roadtrip:
         print(self.get_total_distance(), end=" ")
         print(self.time_estimate(speed_in_mph), end=" ")
         print()
-        # print(self.total_theme_count())
-        # print(themes)
+        print(self.total_theme_count())
+        print(themes)
 
     def write_result_to_file(self, num, start_node, maxTime, speed_in_mph, themes, output_file=None):
         """
@@ -448,7 +452,13 @@ class Roadtrip:
             file.write("\n")
 
 
-    def Give_Narrative(self, start_node):
+    def Give_Narrative(self, start_node, output_file):
+        """
+            Gives the road trip narrative for this road trip
+            
+            :param start_node: the start node of the road trip for initialization of reporting
+            :param output_file: the file to print the narrative to
+        """
 
         if not isinstance(start_node, Node):
             start_node = self.get_node_by_location(start_node)
@@ -462,7 +472,7 @@ class Roadtrip:
             name1 = first node
             name2 = second node
             
-            i. name1 (name1.preference, name1.themes) -> (edge.actualDistance, edge.preference, edge.themes) name2 (name2.preference, name2.themes)
+            i. name1 (name1.preference, name1.themes) -> (edge.actualDistance, edge.preference, edge.themes) name2 (name2.preference, name2.themes)\n
         """
 
         user_content = ""
@@ -484,15 +494,54 @@ class Roadtrip:
             user_content += "\n"
             line_number += 1
 
-        # remember to build based on articles and references
-        # use one of the patterns from the article
-        # use assistant role as well    
+        # list of patterns used:
+        # 
+        # meta language creation pattern
+        # When I say X, I mean Y (or would like you to do Y)
+        # 
+        # persona pattern
+        # Act as persona X
+        # Provide outputs that persona X would create  
+        #
+        # alternative approaches pattern
+        # Within scope X, if there are alternative ways to accomplish the same thing, list the best alternate approaches
+        # (Optional) compare/contrast the pros and cons of each approach
+        # (Optional) include the original way that I asked
+        # (Optional) prompt me for which approach I would like to use  
+        # 
+        # template pattern
+        # I am going to provide a template for your output
+        # X is my placeholder for content
+        # Try to fit the output into one or more of the placeholders that I list
+        # Please preserve the formatting and overall template that I provide
+        # This is the template: PATTERN with PLACEHOLDERS 
+       
+        system_content = "You are a road trip assistant. You give attractions at various locations as well " \
+                         "as preferred edges based on a road trip. Provide the output that a road trip assistant would create. " \
+                         "When I say 'give me a road trip assistant report,' I mean give me a report based on my inputted road trip " \
+                         "with the role of a road trip assistant."
+        
+        assistant_message = "Road trips will be in the following pattern." \
+                            "i. name1 (name1.preference, name1.themes) -> (edge.actualDistance, edge.preference, edge.themes) name2 (name2.preference, name2.themes)\n" \
+                            "where i is a number, name1 is a location, name2 is another location, and -> refers to an edge between the two locations." \
+                 
+        prompt = "Give me a road trip assistant report. If there are alternative ways to accomplish this, give two alternative approaches " \
+                 "and compare and contrast these approaches."
+
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a road trip assistant and give attractions based on a road trip."
+                    "content": system_content
+                },
+                {
+                    "role": "assistant",
+                    "content": assistant_message
+                },
+                {
+                    "role": "user",
+                    "content": prompt
                 },
                 {
                     "role": "user",
@@ -505,8 +554,17 @@ class Roadtrip:
             frequency_penalty=0,
             presence_penalty=0
         )
+        
+        output = response.choices[0].message.content
+
         print("\nLLM Generated Response: ")
-        print(response.choices[0].message.content)
+        print(output)
+        
+        with open(output_file, 'a', encoding='utf-8') as file:
+            file.write("\nLLM Generated Respons: ")
+            file.write(output)
+            file.write("\n")
+            file.write("\n")
             
 
 class RegressionTree:
@@ -1264,7 +1322,7 @@ def main():
     first_trip[1].print_result(num_trials, start_location, max_time, speed_in_mph, themes)
     first_trip[1].write_result_to_file(num_trials, start_location, max_time, speed_in_mph, themes, result_file)
     #FIXME ADD GIVE NARRATIVE HERE
-    first_trip[1].Give_Narrative(start_location)
+    first_trip[1].Give_Narrative(start_location, result_file)
     num_trials += 1
 
     runtimes.append(first_trip[1].time_search)
@@ -1278,7 +1336,7 @@ def main():
             cur_trip = round_trips.get()
             cur_trip[1].print_result(num_trials, start_location, max_time, speed_in_mph, themes)
             cur_trip[1].write_result_to_file(num_trials, start_location, max_time, speed_in_mph, themes, result_file)
-            cur_trip[1].Give_Narrative(start_location)
+            cur_trip[1].Give_Narrative(start_location, result_file)
             # FIXME ADD GIVE NARRATIVE HERE
             num_trials += 1
             runtimes.append(cur_trip[1].time_search)
