@@ -5,7 +5,7 @@ Marcus Kamen, Marius Schueller, Brynn LeBlanc, and Daniel Yakubu
 Use your own API key for ChatGPT, as described under the imports
 
 To run this file you press play on main if using Pycharm. Otherwise, just run the main function with any
-standard python interpreter. Make sure to have math, random, csv, queue, PriorityQueue, copy, re, and time
+standard python interpreter. Make sure to have math, random, csv, queue, PriorityQueue, copy, time, and openai
 installed as packages on your computer for python. During runtime, you will be asked for the start city which should be
 formatted in the form CityStateInitials (for example NashvilleTN), in addition to the file paths where the road trip
 data will be obtained, the average speed you want to drive, and the file path to save the roadtrip.
@@ -20,6 +20,7 @@ a high preferences, and then return to the start in a circular manner.
 During our A* search we were able to use both path cost and heuristic distance by weighting the preference
 value of each node and edge. We did this because the different edge values were between 21 and 338,
 thereby putting the influence of preferences on being slightly less than the average distance, but still significant.
+We run our road trip through the ChatGPT LLM API. The prompt engineering for our results is described in our report and our Give_Narrative function.
 """
 
 import math
@@ -1382,8 +1383,8 @@ In general, the amount of time for each road trip is not strictly under the time
 50 hours from the given time alloted for the trip. In addition to this, the amount of time as well as the preference 
 for the road trips generally decreases between each suggested trip.
 
-Average runtime of all searches for all test runs: 1.160
-Average maximum trip preference for all test runs: 7.424
-Average total tip preference for all test runs:    7.123
-Average minimum trip preference for all test runs: 6.796
+Average runtime of all searches for all test runs: 0.558
+Average maximum trip preference for all test runs: 8.191
+Average total trip preference for all test runs:   7.851
+Average minimum trip preference for all test runs: 7.645
 """
