@@ -434,7 +434,7 @@ class Roadtrip:
                 file.write(f"{cur_node.name} ")
                 file.write(f"{edge.label} ")
                 file.write(f"{edge.preference} ")
-                file.write(f"{edge.add_time_on_edge(speed_in_mph)}")
+                file.write(f"{edge.add_time_on_edge(speed_in_mph)} ")
                 file.write(f"{cur_node.preference} ")
                 file.write(f"{cur_node.time_at_location()} ")
                 file.write("\n")
