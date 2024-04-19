@@ -562,7 +562,7 @@ class Roadtrip:
         print(output)
         
         with open(output_file, 'a', encoding='utf-8') as file:
-            file.write("\nLLM Generated Respons: ")
+            file.write("\nLLM Generated Response:\n")
             file.write(output)
             file.write("\n")
             file.write("\n")
