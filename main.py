@@ -509,13 +509,6 @@ class Roadtrip:
         # (Optional) compare/contrast the pros and cons of each approach
         # (Optional) include the original way that I asked
         # (Optional) prompt me for which approach I would like to use  
-        # 
-        # template pattern
-        # I am going to provide a template for your output
-        # X is my placeholder for content
-        # Try to fit the output into one or more of the placeholders that I list
-        # Please preserve the formatting and overall template that I provide
-        # This is the template: PATTERN with PLACEHOLDERS 
        
         system_content = ("You are a road trip assistant. You give attractions at various locations as well "
                          "as preferred edges based on a road trip. Provide the output that a road trip assistant would create. "
