@@ -523,7 +523,8 @@ class Roadtrip:
         
         assistant_message = ("Road trips will be in the following pattern."
                             "i. name1 (name1.preference, name1.themes) -> (edge.actualDistance, edge.preference, edge.themes) name2 (name2.preference, name2.themes)\n"
-                            "where i is a number, name1 is a location, name2 is another location, and -> refers to an edge between the two locations.")
+                            "where i is a number, name1 is a location, name2 is another location, and -> refers to an edge between the two locations.\n"
+                            "Note that higher preference means that the location should be more preferred in the road trip, so make sure to explain those locations better")
                  
         prompt = ("Give me a road trip assistant report. If there are alternative ways to accomplish this, give two alternative approaches "
                  "and compare and contrast these approaches.")
